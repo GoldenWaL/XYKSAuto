@@ -12,6 +12,7 @@
 
 ```bash
 pip install opencv-python keyboard numpy pyautogui pytesseract pillow
+```bash
 
 ## 使用说明
 1. 将安装好的Tesseract-OCR的 `tesseract.exe` 路径放到下载的Python文件的最前面。
