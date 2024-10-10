@@ -17,10 +17,10 @@ from PIL import ImageGrab
 pytesseract.pytesseract.tesseract_cmd = r'D:\Program\Tesseract-OCR\tesseract.exe'
 
 # 定义截图区域的坐标 (左上角和右下角坐标)，根据实际屏幕位置调整
-region1 = (850, 400, 1000, 520)  # 区域1的左上角x, y，右下角x, y
-region2 = (1150, 400, 1300, 520)  # 区域2的左上角x, y，右下角x, y
+region1 = (850, 400, 1000, 520)  # 左边数字区域的左上角x, y，右下角x, y
+region2 = (1150, 400, 1300, 520)  # 右边数字区域的左上角x, y，右下角x, y
 
-# 定义点击位置的坐标
+# 定义点击位置的坐标，根据实际屏幕位置调整
 pause_button = (2040, 1320)  # 暂停(草稿)按键坐标
 continue_button_first = (1000, 1200)  # PK结束后需要点击的三个按键
 continue_button_second = (1200, 1380)
@@ -55,24 +55,24 @@ def extract_number_from_image(image):
 
         if coords is not None:
             x, y, w, h = cv2.boundingRect(coords)
-            cropped_image = mask[y - 5:y + h + 5, x - 5:x + w + 5]
-            inverted_img = cv2.bitwise_not(cropped_image)
-            text = pytesseract.image_to_string(inverted_img, config='--psm 8 digits')
-            digits = ''.join(filter(str.isdigit, text))
             if region == 1 and canvas:
                 if blue_one:
                     canvas.delete(blue_one)
-                blue_one = canvas.create_rectangle(region1[0] + x, region1[1] + y, region1[0] + x + w,
-                                                   region1[1] + y + h, outline="royalblue", width=5)
+                blue_one = canvas.create_rectangle(region1[0] + x-3, region1[1] + y-3, region1[0] + x + w+3,
+                                                   region1[1] + y + h+3 , outline="royalblue", width=2)
                 region = 2
             elif region == 2 and canvas:
                 if blue_two:
                     canvas.delete(blue_two)
-                blue_two = canvas.create_rectangle(region2[0] + x, region2[1] + y, region2[0] + x + w,
-                                                   region2[1] + y + h, outline="royalblue", width=5)
+                blue_two = canvas.create_rectangle(region2[0] + x-3, region2[1] + y-3, region2[0] + x + w+3,
+                                                   region2[1] + y + h+3, outline="royalblue", width=2)
                 region = 1
             elif not canvas:
                 return
+            cropped_image = mask[y - 5:y + h + 5, x - 5:x + w + 5]
+            inverted_img = cv2.bitwise_not(cropped_image)
+            text = pytesseract.image_to_string(inverted_img, config='--psm 8 digits')
+            digits = ''.join(filter(str.isdigit, text))
 
             if len(digits) >= 2:
                 number = int(digits[:2])
