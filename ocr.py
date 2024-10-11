@@ -35,6 +35,7 @@ gui_initialized = False
 region = 1
 blue_one = None
 blue_two = None
+pyautogui.PAUSE = 0.05
 
 
 # 从屏幕截取指定区域的图像
@@ -55,6 +56,7 @@ def extract_number_from_image(image):
 
         if coords is not None:
             x, y, w, h = cv2.boundingRect(coords)
+            '''
             if region == 1 and canvas:
                 if blue_one:
                     canvas.delete(blue_one)
@@ -69,6 +71,7 @@ def extract_number_from_image(image):
                 region = 1
             elif not canvas:
                 return
+            '''
             cropped_image = mask[y - 5:y + h + 5, x - 5:x + w + 5]
             inverted_img = cv2.bitwise_not(cropped_image)
             text = pytesseract.image_to_string(inverted_img, config='--psm 8 digits')
@@ -94,24 +97,24 @@ def extract_number_from_image(image):
 def draw_bigger():
     center_x, center_y = pyautogui.size()[0] // 2, pyautogui.size()[1] // 2 + 350
     pyautogui.moveTo(center_x - 25, center_y)
-    pyautogui.dragTo(center_x + 25, center_y + 30, duration=0.001)
-    pyautogui.dragTo(center_x - 25, center_y + 60, duration=0.001)
+    pyautogui.dragTo(center_x + 25, center_y + 30, duration=0.01)
+    pyautogui.dragTo(center_x - 25, center_y + 60, duration=0.01)
 
 
 # 绘制小于号
 def draw_less():
     center_x, center_y = pyautogui.size()[0] // 2, pyautogui.size()[1] // 2 + 350
     pyautogui.moveTo(center_x + 40, center_y - 18)
-    pyautogui.dragTo(center_x - 80, center_y + 30, duration=0.001)
-    pyautogui.dragTo(center_x + 40, center_y + 78, duration=0.001)
+    pyautogui.dragTo(center_x - 80, center_y + 30, duration=0.01)
+    pyautogui.dragTo(center_x + 40, center_y + 78, duration=0.01)
 
 
 def draw_equal():
     center_x, center_y = pyautogui.size()[0] // 2, pyautogui.size()[1] // 2 + 350
     pyautogui.moveTo(center_x - 40, center_y + 30)
-    pyautogui.dragTo(center_x + 40, center_y + 30, duration=0.001)
+    pyautogui.dragTo(center_x + 40, center_y + 30, duration=0.01)
     pyautogui.moveTo(center_x - 40, center_y + 78)
-    pyautogui.dragTo(center_x + 40, center_y + 78, duration=0.001)
+    pyautogui.dragTo(center_x + 40, center_y + 78, duration=0.01)
 
 
 # 比较区域中的数字
@@ -193,8 +196,8 @@ def create_gui():
     canvas.pack()
 
     # 绘制两个红框来标记区域
-    # canvas.create_rectangle(region1[0], region1[1], region1[2], region1[3], outline="brown", width=5)
-    # canvas.create_rectangle(region2[0], region2[1], region2[2], region2[3], outline="brown", width=5)
+    canvas.create_rectangle(region1[0], region1[1], region1[2], region1[3], outline="brown", width=5)
+    canvas.create_rectangle(region2[0], region2[1], region2[2], region2[3], outline="brown", width=5)
 
     # 创建标签用于显示调试信息（时间和比较结果）
     gui_label = tk.Label(root, text="", font=('Microsoft YaHei', 12, 'bold'), fg='green')
